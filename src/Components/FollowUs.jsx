@@ -18,11 +18,11 @@ const FollowUs = () => {
   const buttonStyle = {
     padding: "19px 30px",
     borderRadius: "50px",
+    fontFamily: "'Sunny Spells', cursive",
     fontSize: "18px",
     fontWeight: "bold",
     cursor: "pointer",
     transition: "all 0.3s ease",
-    textTransform: "uppercase",
     backdropFilter: "blur(5px)",
     width: "180px",
     border: "2px solid rgba(255, 255, 255, 0.3)",

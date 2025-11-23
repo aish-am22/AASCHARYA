@@ -2,114 +2,129 @@ import React from "react";
 
 const Footer = () => {
   return (
-    <footer style={styles.footer}>
-      <div style={styles.container}>
-        <div style={styles.socialLinks}>
-          {/* Instagram */}
+    <footer className="footer-main">
+      <div className="footer-container">
+
+        {/* SOCIAL ICONS */}
+        <div className="footer-social">
           <a
             href="https://www.instagram.com/aascharyaaa"
             target="_blank"
             rel="noopener noreferrer"
-            style={styles.link}
             aria-label="Instagram"
+            className="footer-link"
           >
-            <i className="fab fa-instagram" style={styles.icon}></i>
+            <i className="fab fa-instagram"></i>
           </a>
 
-          {/* YouTube */}
           <a
             href="https://youtube.com/@aascharyaaa"
             target="_blank"
             rel="noopener noreferrer"
-            style={styles.link}
             aria-label="YouTube"
+            className="footer-link"
           >
-            <i className="fab fa-youtube" style={styles.icon}></i>
+            <i className="fab fa-youtube"></i>
           </a>
 
-          {/* Spotify */}
           <a
             href="https://open.spotify.com/"
             target="_blank"
             rel="noopener noreferrer"
-            style={styles.link}
             aria-label="Spotify"
+            className="footer-link"
           >
-            <i className="fab fa-spotify" style={styles.icon}></i>
+            <i className="fab fa-spotify"></i>
           </a>
 
-          {/* Apple Music */}
           <a
             href="https://music.apple.com/"
             target="_blank"
             rel="noopener noreferrer"
-            style={styles.link}
             aria-label="Apple Music"
+            className="footer-link"
           >
-            <i className="fab fa-apple" style={styles.icon}></i>
+            <i className="fab fa-apple"></i>
           </a>
 
-          {/* X */}
           <a
             href="https://x.com/aascharyaaa"
             target="_blank"
             rel="noopener noreferrer"
-            style={styles.link}
             aria-label="X"
+            className="footer-link"
           >
-            <i className="fab fa-x-twitter" style={styles.icon}></i>
+            <i className="fab fa-x-twitter"></i>
           </a>
 
-          {/* Facebook */}
           <a
             href="https://facebook.com"
             target="_blank"
             rel="noopener noreferrer"
-            style={styles.link}
             aria-label="Facebook"
+            className="footer-link"
           >
-            <i className="fab fa-facebook" style={styles.icon}></i>
+            <i className="fab fa-facebook"></i>
           </a>
         </div>
 
-        <div style={styles.copyright}>
+        {/* COPYRIGHT */}
+        <div className="footer-copy">
           © {new Date().getFullYear()} AASCHARYÁ. All rights reserved.
         </div>
       </div>
+
+      {/* INLINE CSS FOR FOOTER */}
+      <style>{`
+        .footer-main {
+          width: 100%;
+          background-color: #c00000;
+          padding: 20px 0;
+          text-align: center;
+          font-family: 'Sunny Spells', cursive !important;
+        }
+
+        .footer-container {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 15px;
+        }
+
+        .footer-social {
+          display: flex;
+          gap: 30px;
+          flex-wrap: wrap;
+          justify-content: center;
+        }
+
+        .footer-link {
+          color: white;
+          font-size: 26px;
+          transition: transform 0.3s ease, color 0.3s ease;
+        }
+
+        .footer-link:hover {
+          transform: translateY(-6px) scale(1.15);
+          color: #ffd700;
+        }
+
+        .footer-copy {
+          color: rgba(255,255,255,0.85);
+          font-size: 14px;
+        }
+
+        @media (max-width: 500px) {
+          .footer-link {
+            font-size: 22px;
+          }
+          .footer-social {
+            gap: 20px;
+          }
+        }
+      `}</style>
     </footer>
   );
-};
-
-const styles = {
-  footer: {
-    width: "100%",
-    backgroundColor: "#c00000",
-    padding: "20px 0",
-    textAlign: "center",
-  },
-  container: {
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    gap: "15px",
-  },
-  socialLinks: {
-    display: "flex",
-    gap: "30px",
-    justifyContent: "center",
-    flexWrap: "wrap",
-  },
-  link: {
-    color: "white",
-    transition: "transform 0.3s ease, color 0.3s ease",
-  },
-  icon: {
-    fontSize: "26px",
-  },
-  copyright: {
-    color: "rgba(255, 255, 255, 0.8)",
-    fontSize: "14px",
-  },
 };
 
 export default Footer;

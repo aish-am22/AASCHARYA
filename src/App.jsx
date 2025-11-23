@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Home from "./Components/Home";
 import Listen from "./Components/Listen";
 import More from "./Components/More";
-import Navbar from "./Components/Nav";
+import Navbar from "./Components/Nav.jsx";
 import Videos from "./Components/Videos";
 import Footer from "./Components/Footer";
 import Bts from "./Components/Bts";
@@ -44,7 +44,7 @@ const App = () => {
   appContainer: {
     display: "flex",
     flexDirection: "column",
-   minHeight: "100vh",
+   minHeight: "50vh",
   },
   content: {
    flex: 1,

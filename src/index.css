@@ -1,6 +1,601 @@
+/* Prevent horizontal overflow site-wide and make box-sizing sane */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* Prevent horizontal scrolling (hides any tiny overflow) */
+html, body, #root {
+  height: 100%;
+  overflow-x: hidden; /* <<-- important: hides bottom scrollbar */
+}
+
+/* Make images/videos behave */
+img, video {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Optional: remove body default margins (if not already removed) */
+body {
+  margin: 0;
+}
+
+/* smooth scrolling for anchor jumps (desktop & modern browsers) */
+html {
+  scroll-behavior: smooth;
+  /* reserve space for scrollbar to avoid layout shift on show/hide */
+  scrollbar-gutter: stable;
+}
+
+/* enable native momentum scrolling on iOS */
+body, main, .scrollable {
+  -webkit-overflow-scrolling: touch;
+}
+
+/* optional: custom smoother-looking scrollbar (desktop) */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(0,0,0,0.35);
+  border-radius: 8px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+.brand-text:hover {
+  transform: scale(1.05);
+}
+
+
+
+
+
+
 @font-face {
   font-family: 'Femmina';
   src: url('./assets/fonts/Femmina.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
 }
+/* Make all backgrounds/media cover the screen properly */
+.fullscreen-media {
+  width: 100vw;
+  height: 100vh;
+  object-fit: cover;        /* Fills without distortion */
+  object-position: center;
+  display: block;
+  margin: 0;
+  padding: 0;
+  border: none;
+}
+
+/* =========================
+   AASCHARYÁ - Animation Kit
+   Paste this whole file into index.css
+   ========================= */
+
+/* -- accessibility: respect reduced motion -- */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+/* -------------------------
+   Video background gentle zoom & fade
+   ------------------------- */
+video {
+  /* target your background video element */
+  animation: bg-zoom 18s linear infinite alternate, fade-in 0.9s ease forwards;
+  transform-origin: center center;
+  will-change: transform, opacity;
+}
+
+/* subtle slow zoom in/out */
+@keyframes bg-zoom {
+  0%   { transform: scale(1); }
+  100% { transform: scale(1.06); }
+}
+
+/* general fade-in used in a few places */
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* -------------------------
+   Overlay content entrance
+   ------------------------- */
+.overlay {
+  animation: overlay-slide-up 1s cubic-bezier(.2,.9,.2,1) 0.25s both;
+  will-change: transform, opacity;
+}
+
+@keyframes overlay-slide-up {
+  0% { opacity: 0; transform: translateY(18px) scale(0.995); }
+  60% { opacity: 1; transform: translateY(-6px) scale(1.002); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* -------------------------
+   Buttons — float, hover & focus
+   ------------------------- */
+
+/* base style improvements for all buttons within the home-buttons container */
+.home-buttons {
+  /* slight entrance for the whole button group */
+  animation: group-fade-in 0.9s ease both;
+}
+@keyframes group-fade-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* each button gets a tiny floating motion to feel alive */
+.home-buttons button {
+  animation: button-float 6s ease-in-out infinite;
+  transition: transform 220ms cubic-bezier(.2,.9,.2,1), box-shadow 220ms ease;
+  will-change: transform, box-shadow;
+  outline: none;
+}
+
+/* float keyframes produce a slow up/down float */
+@keyframes button-float {
+  0%   { transform: translateY(0); }
+  50%  { transform: translateY(-6px); }
+  100% { transform: translateY(0); }
+}
+
+/* hover/focus: stronger lift, soft glow (note: your JS also toggles background color) */
+.home-buttons button:hover,
+.home-buttons button:focus {
+  transform: translateY(-10px) scale(1.02);
+  box-shadow: 0 18px 40px rgba(0,0,0,0.35), 0 2px 8px rgba(255,0,0,0.08);
+  z-index: 5;
+}
+
+/* active press state */
+.home-buttons button:active {
+  transform: translateY(-6px) scale(0.995);
+  transition-duration: 120ms;
+}
+
+/* optional ripple effect (pure CSS) on click focus-visible for keyboard users */
+.home-buttons button:focus-visible::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: 0 0 0 4px rgba(255,0,0,0.08);
+  animation: focus-pulse 900ms forwards;
+  pointer-events: none;
+}
+@keyframes focus-pulse {
+  from { opacity: 0.9; transform: scale(0.98); }
+  to   { opacity: 0; transform: scale(1.2); }
+}
+
+/* -------------------------
+   Popup backdrop & card animations
+   ------------------------- */
+
+/* target the dialog/backdrop (role="dialog" in your markup) */
+div[role="dialog"] {
+  animation: backdrop-fade 240ms cubic-bezier(.2,.9,.2,1) both;
+}
+
+@keyframes backdrop-fade {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* the card inside the dialog - gentle pop + blur sweep */
+div[role="dialog"] > div {
+  transform-origin: center center;
+  animation: card-pop 420ms cubic-bezier(.2,1.2,.3,1) 120ms both;
+  will-change: transform, opacity, filter;
+}
+
+/* pop-in with a slight scale overshoot and glass sheen */
+@keyframes card-pop {
+  0%   { opacity: 0; transform: translateY(14px) scale(0.98); }
+  70%  { opacity: 1; transform: translateY(-6px) scale(1.02); filter: brightness(1.03); }
+  100% { opacity: 1; transform: translateY(0) scale(1); filter: none; }
+}
+
+/* subtle shimmer across the popup title using pseudo-element */
+div[role="dialog"] h3 {
+  position: relative;
+  overflow: hidden;
+}
+div[role="dialog"] h3::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -40%;
+  width: 40%;
+  height: 100%;
+  transform: skewX(-18deg);
+  background: linear-gradient(90deg, rgba(255,255,255,0.06), rgba(255,255,255,0.22), rgba(255,255,255,0.06));
+  animation: title-shimmer 2.2s linear infinite;
+  pointer-events: none;
+  mix-blend-mode: overlay;
+}
+@keyframes title-shimmer {
+  0% { left: -40%; }
+  100% { left: 140%; }
+}
+
+/* -------------------------
+   Image section entrance & parallax reveal
+   ------------------------- */
+
+/* target second section (your imageSection is the second <section>) */
+section:nth-of-type(2) {
+  overflow: hidden;
+  position: relative;
+}
+
+/* image crossfade and slow parallax (applies to the img inside the second section) */
+section:nth-of-type(2) img {
+  animation: img-fade-parallax 16s linear infinite;
+  will-change: transform, opacity;
+}
+
+/* combine a tiny slow vertical movement with a crossfade to feel alive */
+@keyframes img-fade-parallax {
+  0%   { transform: translateY(0) scale(1.02); opacity: 0.98; }
+  50%  { transform: translateY(-14px) scale(1.04); opacity: 1; }
+  100% { transform: translateY(0) scale(1.02); opacity: 0.98; }
+}
+
+/* overlay text fade-in for image area (if you later add text in imageOverlay) */
+section:nth-of-type(2) .imageOverlay {
+  animation: overlay-text-appear 1s ease 0.5s both;
+}
+@keyframes overlay-text-appear {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* -------------------------
+   Small decorative niceties
+   ------------------------- */
+
+/* subtle vignette so text reads easier on the video */
+.overlay::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image: radial-gradient(ellipse at center, rgba(0,0,0,0.0) 30%, rgba(0,0,0,0.28) 100%);
+  z-index: 0;
+  opacity: 0.6;
+  mix-blend-mode: multiply;
+  animation: vignette-breath 12s ease-in-out infinite;
+}
+@keyframes vignette-breath {
+  0%   { opacity: 0.55; transform: scale(1); }
+  50%  { opacity: 0.72; transform: scale(1.02); }
+  100% { opacity: 0.55; transform: scale(1); }
+}
+
+/* small helper: ensure overlay content sits above vignette */
+.overlay > * { z-index: 2; }
+
+/* safety: prevent animation bleed on very small screens */
+@media (max-width: 480px) {
+  .home-buttons button { animation-duration: 8s; }
+  video { animation-duration: 22s; }
+}
+
+/* =========================
+   End of Animation Kit
+   ========================= */
+/* =========================
+   WOW 3D BUTTON ANIMATIONS
+   ========================= */
+
+.home-buttons button {
+  position: relative;
+  transform-style: preserve-3d;
+  perspective: 1000px;
+
+  animation: button-float 6s ease-in-out infinite;
+  transition: transform 280ms cubic-bezier(.2,1.2,.3,1), 
+              box-shadow 280ms cubic-bezier(.2,1.2,.3,1),
+              background-color 280ms ease;
+
+  overflow: hidden;
+}
+
+/* Soft float effect */
+@keyframes button-float {
+  0%   { transform: translateY(0) translateZ(0); }
+  50%  { transform: translateY(-8px) translateZ(10px); }
+  100% { transform: translateY(0) translateZ(0); }
+}
+
+/* ------------------------------
+   3D Hover Effect
+   ------------------------------ */
+
+/* Lift + Tilt + Deep Shadow */
+.home-buttons button:hover {
+  transform: translateY(-14px) translateZ(26px) rotateX(6deg);
+  box-shadow: 0 18px 40px rgba(0,0,0,0.35),
+              0 12px 20px rgba(255,0,0,0.35);
+}
+
+/* Pressed State */
+.home-buttons button:active {
+  transform: translateY(-6px) translateZ(5px) rotateX(2deg);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.25);
+}
+
+/* --------------------------------------
+   SHINE EFFECT (glossy light reflection)
+   -------------------------------------- */
+
+.home-buttons button::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -120%;
+  width: 120%;
+  height: 100%;
+  background: linear-gradient(
+    120deg,
+    rgba(255,255,255,0.0) 0%,
+    rgba(255,255,255,0.4) 40%,
+    rgba(255,255,255,0.0) 80%
+  );
+  transform: skewX(-20deg);
+  transition: all 0.3s ease;
+}
+
+/* Shine slides across on hover */
+.home-buttons button:hover::before {
+  left: 120%;
+  transition: all 0.6s ease-out;
+}
+
+/* --------------------------------------
+   3D Bottom Layer (Depth Illusion)
+   -------------------------------------- */
+.home-buttons button::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+
+  background: rgba(0, 0, 0, 0.25);
+  transform: translateZ(-20px);
+  filter: blur(0px);
+  opacity: 0;
+  transition: opacity 300ms ease;
+}
+
+/* visible depth layer on hover */
+.home-buttons button:hover::after {
+  opacity: 1;
+}
+
+/* --------------------------------------
+   Extra Glow On Hover (slight neon)
+   -------------------------------------- */
+.home-buttons button:hover {
+  box-shadow:
+    0 18px 40px rgba(0,0,0,0.35),
+    0 0 22px rgba(255,0,0,0.35), /* red glow */
+    0 0 40px rgba(255,255,255,0.12); /* soft neutral glow */
+}
+
+/* --------------------------------------
+   Focus Ring for keyboard users
+   -------------------------------------- */
+.home-buttons button:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 4px rgba(255,0,0,0.35);
+}
+
+/* ==============================
+   NAVBAR ANIMATIONS — Drop into index.css
+   ============================== */
+
+/* Respect users who reduce motion */
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; transition: none !important; }
+}
+
+/* ---------- Navbar Entrance & Glass ----------
+   Targets the nav used in your component: nav[role="navigation"] */
+nav[role="navigation"] {
+  --nav-bg: rgba(0,0,0,0.18);
+  --nav-blur: 0px;
+  --accent: rgba(255,0,0,0.9);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px 48px;
+  position: fixed;
+  inset: 0 0 auto 0;
+  z-index: 1100;
+  backdrop-filter: blur(var(--nav-blur));
+  -webkit-backdrop-filter: blur(var(--nav-blur));
+  background: linear-gradient(180deg, rgba(0,0,0,0.03), var(--nav-bg));
+  transform: translateY(-8px);
+  opacity: 0;
+  animation: nav-drop 700ms cubic-bezier(.2,.9,.2,1) 150ms both;
+  transition: background 360ms ease, transform 360ms cubic-bezier(.2,.9,.2,1), box-shadow 360ms ease;
+  will-change: transform, opacity;
+}
+
+/* stronger glass on hover (hovering the bar area) */
+nav[role="navigation"]:hover {
+  background: linear-gradient(180deg, rgba(0,0,0,0.06), rgba(0,0,0,0.24));
+  box-shadow: 0 10px 30px rgba(0,0,0,0.28);
+}
+
+/* navbar entrance keyframes */
+@keyframes nav-drop {
+  0%   { transform: translateY(-14px) scale(0.995); opacity: 0; }
+  60%  { transform: translateY(6px) scale(1.003); opacity: 1; }
+  100% { transform: translateY(0) scale(1); opacity: 1; }
+}
+
+/* ---------- Brand (AASCHARYÁ) — 3D pop + shimmer ----------
+   uses .brand-text from your JSX */
+.brand-text {
+  display: inline-block;
+  transform-origin: center;
+  transition: transform 320ms cubic-bezier(.2,1,.3,1), text-shadow 320ms ease;
+  will-change: transform, text-shadow;
+  position: relative;
+  z-index: 1200;
+  cursor: pointer;
+  user-select: none;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* brand pop-in on load */
+.brand-text {
+  animation: brand-pop 620ms cubic-bezier(.2,1,.3,1) 300ms both;
+}
+@keyframes brand-pop {
+  0%   { transform: translateY(-8px) scale(0.98); opacity: 0; filter: blur(2px); }
+  70%  { transform: translateY(6px) scale(1.03); opacity: 1; filter: blur(0); text-shadow: 0 6px 20px rgba(0,0,0,0.25); }
+  100% { transform: translateY(0) scale(1); opacity: 1; filter: none; }
+}
+
+/* subtle 3D tilt on hover with a faint neon accent */
+.brand-text:hover,
+.brand-text:focus {
+  transform: translateY(-6px) rotateX(4deg) rotateY(-6deg) scale(1.02);
+  text-shadow: 0 14px 32px rgba(0,0,0,0.38), 0 0 12px rgba(255,0,0,0.05);
+}
+
+/* brand shimmer (delicate) */
+.brand-text::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  left: -60%;
+  width: 60%;
+  pointer-events: none;
+  transform: skewX(-18deg);
+  background: linear-gradient(90deg, rgba(255,255,255,0.02), rgba(255,255,255,0.14), rgba(255,255,255,0.02));
+  opacity: 0;
+  transition: left 650ms cubic-bezier(.2,.9,.2,1), opacity 300ms ease;
+  mix-blend-mode: overlay;
+}
+.brand-text:hover::after,
+.brand-text:focus::after {
+  left: 140%;
+  opacity: 1;
+}
+
+/* ---------- Links — layout & staggered entrance ---------- */
+nav[role="navigation"] a,
+nav[role="navigation"] a:link,
+nav[role="navigation"] a:visited {
+  color: white;
+  text-decoration: none;
+  display: inline-block;
+  font-family: 'Sunny Spells', cursive;
+  font-size: 20px;
+  letter-spacing: 1px;
+  transform-origin: center;
+  will-change: transform, opacity;
+  transition: transform 300ms cubic-bezier(.2,1,.3,1), color 220ms ease, text-shadow 220ms ease;
+  position: relative;
+  padding: 6px 2px;
+  opacity: 0;
+  transform: translateY(8px) scale(0.995);
+}
+
+/* apply a gentle stagger using nth-of-type (works for small list) */
+nav[role="navigation"] a:nth-of-type(1) { animation: link-in 480ms ease 420ms both; }
+nav[role="navigation"] a:nth-of-type(2) { animation: link-in 480ms ease 520ms both; }
+nav[role="navigation"] a:nth-of-type(3) { animation: link-in 480ms ease 620ms both; }
+
+@keyframes link-in {
+  from { opacity: 0; transform: translateY(12px) scale(0.996); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* ---------- Link hover — 3D tilt + underline sweep ---------- */
+nav[role="navigation"] a:hover,
+nav[role="navigation"] a:focus {
+  transform: translateY(-8px) rotateX(6deg);
+  color: var(--accent);
+  text-shadow: 0 10px 30px rgba(0,0,0,0.35);
+  z-index: 1200;
+}
+
+/* animated underline using pseudo-element */
+nav[role="navigation"] a::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -6px;
+  width: 0;
+  height: 3px;
+  background: linear-gradient(90deg, rgba(255,0,0,0.95), rgba(255,255,255,0.12));
+  transform: translateX(-50%);
+  transition: width 360ms cubic-bezier(.2,.9,.2,1);
+  border-radius: 8px;
+  will-change: width;
+  opacity: 0.98;
+}
+nav[role="navigation"] a:hover::after,
+nav[role="navigation"] a:focus::after {
+  width: calc(80%); /* underline expands on hover */
+}
+
+/* ---------- Small press feedback for links ---------- */
+nav[role="navigation"] a:active {
+  transform: translateY(-4px) rotateX(2deg) scale(0.995);
+  transition-duration: 140ms;
+}
+
+/* ---------- Keyboard focus accessibility ---------- */
+nav[role="navigation"] a:focus-visible,
+.brand-text:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 5px rgba(255,0,0,0.15);
+  border-radius: 8px;
+}
+
+/* ---------- Responsive adjustments (mobile) ---------- */
+@media (max-width: 768px) {
+  nav[role="navigation"] { padding: 12px 18px; }
+
+  /* reduce transforms so it stays comfortable on small screens */
+  .brand-text:hover { transform: translateY(-4px) rotateX(2deg) rotateY(-3deg) scale(1.01); }
+  nav[role="navigation"] a:hover { transform: translateY(-6px) rotateX(4deg); }
+
+  /* adjust stagger delays so they still feel snappy */
+  nav[role="navigation"] a:nth-of-type(1) { animation-delay: 260ms; }
+  nav[role="navigation"] a:nth-of-type(2) { animation-delay: 340ms; }
+  nav[role="navigation"] a:nth-of-type(3) { animation-delay: 420ms; }
+}
+
+/* ---------- Tiny polish: hide shimmer on super small screens ---------- */
+@media (max-width: 420px) {
+  .brand-text::after { display: none; }
+}
+
+
+
+
