@@ -78,7 +78,7 @@ const Footer = () => {
       <style>{`
         .footer-main {
           width: 100%;
-          background-color: #c00000;
+          background-color: #d10f0fff;
           padding: 20px 0;
           text-align: center;
           font-family: 'Sunny Spells', cursive !important;

@@ -18,13 +18,14 @@ const Videos = () => {
   useEffect(() => {
     // set body defaults and cleanup
     document.body.style.margin = "0";
-    document.body.style.backgroundColor = "#C00000";
+    document.body.style.backgroundColor = "#B00303";
+
     const onResize = () => setIsMobile(window.innerWidth <= 640);
     onResize();
     window.addEventListener("resize", onResize);
     return () => {
       window.removeEventListener("resize", onResize);
-      document.body.style.backgroundColor = "";
+      // document.body.style.backgroundColor = "";
     };
   }, []);
 
@@ -53,20 +54,20 @@ const Videos = () => {
   const columns = isMobile ? 1 : 3;
   const gap = isMobile ? 14 : 22;
 
-  const container = {
-    position: "relative",
-    width: "100%",
-    minHeight: `calc(100vh - ${FOOTER_HEIGHT}px)`,
-    overflow: "hidden",
-    paddingTop: `${NAVBAR_HEIGHT}px`,
-    boxSizing: "border-box",
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "flex-start",
-    paddingBottom: "40px",
-    // main fade-in
-    animation: "siteFadeIn 650ms ease forwards",
-  };
+ const container = {
+  position: "relative",
+  width: "100%",
+  minHeight: `calc(100vh - ${FOOTER_HEIGHT}px)`,
+  overflow: "hidden",
+  paddingTop: `${NAVBAR_HEIGHT}px`,
+  boxSizing: "border-box",
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "flex-start",
+  paddingBottom: "40px",
+  backgroundColor: "#B00303",   // <-- ADDED
+  animation: "siteFadeIn 650ms ease forwards",
+};
 
   // doodle as <img> inside the section so footer not covered
   const doodleImgStyle = {

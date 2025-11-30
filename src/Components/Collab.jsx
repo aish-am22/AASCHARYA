@@ -3,8 +3,8 @@ import React from "react";
 const CollaborationSection = () => {
   const styles = {
     collabSection: {
-      backgroundColor: "#c00000",
-      color: "#fff",
+      backgroundColor: "#d10f0fff",
+      color: "#ffffffc4",
       textAlign: "center",
       padding: "35px 15px",
       width: "100%",
@@ -31,12 +31,12 @@ const CollaborationSection = () => {
   return (
     <section style={styles.collabSection}>
       <p style={styles.collabText}>
-        For collaborations or partnerships, mail us at{" "}
+       For collaboration inquiries and creative partnerships, please contact {" "}
         <a
-          href="mailto:aascharyamusic@gmail.com?subject=Collaboration Inquiry"
+          href="mailto:teamaascharya@gmail.com?subject=Collaboration Inquiry"
           style={styles.mailLink}
         >
-          aascharyamusic@gmail.com
+          teamaascharya@gmail.com
         </a>
       </p>
     </section>

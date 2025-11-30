@@ -2,17 +2,29 @@ import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Image from "../assets/download.jpeg";
 
+/** local font imports — adjust names if your files differ **/
+import Femmina from "../assets/fonts/Femmina.ttf";
+import Nyc from "../assets/fonts/Nyc.ttf";
+import SuperSerene from "../assets/fonts/SuperSerene.ttf.ttf";
+import SuperShiny from "../assets/fonts/SuperShiny.ttf.ttf";
+import SFHandRegular from "../assets/fonts/SF_Cartoonist_Hand.ttf";
+import SFHandBold from "../assets/fonts/SF_Cartoonist_Hand_Bold.ttf";
+import SFHandItalic from "../assets/fonts/SF_Cartoonist_Hand_Italic.ttf";
+import SFHandSCItalic from "../assets/fonts/SF_Cartoonist_Hand_SC_Italic.ttf";
+
+
 const Home = () => {
   const navigate = useNavigate();
   const [showPopup, setShowPopup] = useState(true);
   const okBtnRef = useRef(null);
-  
 
   useEffect(() => {
-    // inject font links (only if not already included in index.html)
     const fonts = [
-      { href: "https://fonts.cdnfonts.com/css/rusty-hooks", id: "rusty-hooks-css" }, // Rusty Hooks
-      { href: "https://db.onlinewebfonts.com/c/bae6d0a1f6d2a9d8d8d2e3b0c3f2a1f5?family=Sunny+Spells", id: "sunny-spells-css" }, // Sunny Spells (example provider)
+      
+      { href: "https://fonts.cdnfonts.com/css/yorris-notes", id: "yorris-notes-css" },
+      { href: "https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&display=swap", id: "montserrat-css" },
+      { href: "https://fonts.googleapis.com/css2?family=Quicksand:wght@500;600&display=swap", id: "quicksand-css" },
+      { href: "https://db.onlinewebfonts.com/c/bae6d0a1f6d2a9d8d8d2e3b0c3f2a1f5?family=Sunny+Spells", id: "sunny-spells-css" },
     ];
 
     fonts.forEach(({ href, id }) => {
@@ -21,40 +33,27 @@ const Home = () => {
         link.rel = "stylesheet";
         link.href = href;
         link.id = id;
-        // don't block rendering
         link.media = "print";
         link.onload = () => (link.media = "all");
         document.head.appendChild(link);
       }
     });
 
-    // Save previous body styles
     const prevBg = document.body.style.backgroundColor;
     const prevOverflowX = document.body.style.overflowX;
 
-    // Make background transparent for Home
     document.body.style.backgroundColor = "transparent";
-
-    // Prevent horizontal scrollbar = no stripe
     document.body.style.overflowX = "hidden";
 
     return () => {
-      // Restore for other pages
       document.body.style.backgroundColor = prevBg || "";
       document.body.style.overflowX = prevOverflowX || "";
-      // optionally remove injected links (keeps them by default for performance)
-      // fonts.forEach(({ id }) => {
-      //   const el = document.getElementById(id);
-      //   if (el) el.remove();
-      // });
     };
   }, []);
 
   // Focus the OK button when popup opens and add ESC to close
   useEffect(() => {
-    if (showPopup) {
-      okBtnRef.current?.focus();
-    }
+    if (showPopup) okBtnRef.current?.focus();
 
     const handleKey = (e) => {
       if (e.key === "Escape") setShowPopup(false);
@@ -69,39 +68,39 @@ const Home = () => {
   const handleLyricalVideoClick = () =>
     window.open("https://www.youtube.com/watch?v=YOUR_LYRICAL_VIDEO_ID", "_blank");
 
+  // visual-only base for buttons; widths handled via CSS so all are equal
   const buttonStyle = {
-    padding: "14px 40px",
     borderRadius: "50px",
-    fontSize: "22px",
-    fontWeight: "bold",
-    fontFamily: "'Sunny Spells', cursive", // page font applied
+    fontWeight: 700,
+    fontFamily: "'Sunny Spells', cursive",
     cursor: "pointer",
     overflow: "hidden",
-    transition: "all 0.3s ease",
-    backdropFilter: "blur(5px)",
-    border: "2px solid rgba(255, 255, 255, 0.3)",
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
-    color: "white",
-    position: "relative",
-    width: "auto",
+    transition: "transform 220ms ease, box-shadow 300ms ease, background 320ms ease, opacity 180ms ease",
+    border: "2px solid rgba(255, 255, 255, 0.28)",
+    backgroundColor: "rgba(0,0,0,0.5)",
+    color: "#fff",
+    boxSizing: "border-box",
+    padding: "0 18px",
+    height: "56px",
+    display: "inline-flex",
+    alignItems: "center",
+    justifyContent: "center",
   };
 
-  // popup button style (smaller, modern)
   const popupOkStyle = {
-  padding: "10px 20px",
-  borderRadius: "10px",
-  fontSize: "16px",
-  fontFamily: "'Fredoka One', cursive",
-  cursor: "pointer",
-  border: "none",
-  backgroundColor: "white",
-  color: "#0c0909",
-  boxShadow: "0 6px 18px rgba(0,0,0,0.25)",
-};
-
+    padding: "10px 20px",
+    borderRadius: "10px",
+    fontSize: "16px",
+    fontFamily: "'Fredoka One', cursive",
+    cursor: "pointer",
+    border: "none",
+    backgroundColor: "white",
+    color: "#0c0909",
+    boxShadow: "0 6px 18px rgba(0,0,0,0.25)",
+  };
 
   return (
-    <div style={styles.container}>
+    <div className="home-root" style={styles.container}>
       {/* Popup overlay */}
       {showPopup && (
         <div
@@ -109,22 +108,23 @@ const Home = () => {
           aria-modal="true"
           aria-label="Welcome dialog"
           style={styles.popupBackdrop}
-          onClick={() => setShowPopup(false)} // clicking backdrop closes
+          onClick={() => setShowPopup(false)}
         >
           <div
             style={styles.popupCard}
-            onClick={(e) => e.stopPropagation()} // prevent backdrop click from closing when clicking inside
+            onClick={(e) => e.stopPropagation()}
           >
-            {/* Heading uses Rusty Hooks (not Sunny Spells) */}
-            <h3 style={styles.popupTitle}>AASCHARYÁ — Coming December 2025</h3>
+            <h3 style={styles.popupTitle}>
+              AASCHARYÁ — Coming December 2025
+              <span style={styles.popupTitleUnderline}></span>
+            </h3>
 
             <p style={styles.popupMessage}>
               This platform is in development. The launch has moved to December 2025 while visuals and content are refined. Thank you for your patience — more is coming.
             </p>
             <p style={styles.popupNote}>
-  Note: This preview was shared with the Clive Davis Institute as proof of ongoing creative development. 
-  The full site and first release are still in progress.
-</p>
+              Note: This preview was shared with the Clive Davis Institute as proof of ongoing creative development. The full site and first release are still in progress.
+            </p>
 
             <div style={{ display: "flex", justifyContent: "center", marginTop: 14 }}>
               <button
@@ -141,7 +141,7 @@ const Home = () => {
       )}
 
       {/* ====== Video Section ====== */}
-      <section style={styles.videoSection}>
+      <section className="video-section" style={styles.videoSection}>
         <video
           src="https://www.pexels.com/download/video/8053107.mp4"
           autoPlay
@@ -151,35 +151,35 @@ const Home = () => {
           style={styles.video}
         />
 
-        <div style={styles.overlay}>
-          <div style={styles.buttons} className="home-buttons">
-          <button
-  style={buttonStyle}
-  onClick={handleListenClick}
-  onMouseEnter={(e) => (e.target.style.backgroundColor = "rgba(255, 0, 0, 0.7)")}
-  onMouseLeave={(e) => (e.target.style.backgroundColor = "rgba(0, 0, 0, 0.5)")}
->
-  Listen/Stream
-</button>
+        {/* Overlay controlled by CSS for responsive behavior */}
+        <div className="home-overlay">
+          <div className="home-buttons" style={styles.buttons}>
+            <button
+              className="home-btn"
+              style={buttonStyle}
+              onClick={handleListenClick}
+              aria-label="Listen / Stream"
+            >
+              Listen/Stream
+            </button>
 
-<button
-  style={buttonStyle}
-  onClick={handleMusicVideoClick}
-  onMouseEnter={(e) => (e.target.style.backgroundColor = "rgba(255, 0, 0, 0.7)")}
-  onMouseLeave={(e) => (e.target.style.backgroundColor = "rgba(0, 0, 0, 0.5)")}
->
-  Watch The Music Video
-</button>
+            <button
+              className="home-btn"
+              style={buttonStyle}
+              onClick={handleMusicVideoClick}
+              aria-label="Watch The Music Video"
+            >
+              Watch The Music Video
+            </button>
 
-<button
-  style={buttonStyle}
-  onClick={handleLyricalVideoClick}
-  onMouseEnter={(e) => (e.target.style.backgroundColor = "rgba(255, 0, 0, 0.7)")}
-  onMouseLeave={(e) => (e.target.style.backgroundColor = "rgba(0, 0, 0, 0.5)")}
->
-  Watch The Lyrical Video
-</button>
-
+            <button
+              className="home-btn"
+              style={buttonStyle}
+              onClick={handleLyricalVideoClick}
+              aria-label="Watch The Lyrical Video"
+            >
+              Watch The Lyrical Video
+            </button>
           </div>
         </div>
       </section>
@@ -192,44 +192,162 @@ const Home = () => {
         </div>
       </section>
 
-      <style>
-        {`
-          /* Ensure popup message and buttons use Sunny Spells by default except headings */
-          body, .home-buttons, .home-buttons button {
-            font-family: 'Sunny Spells', cursive;
+      {/* custom fonts + responsive styling */}
+      <style>{`
+        /* Register your local fonts (imported above via JS imports) */
+        @font-face {
+          font-family: 'Femmina';
+          src: url(${Femmina}) format('truetype');
+          font-weight: 400;
+          font-style: normal;
+          font-display: swap;
+        }
+        @font-face {
+          font-family: 'NYC';
+          src: url(${Nyc}) format('truetype');
+          font-weight: 400;
+          font-style: normal;
+          font-display: swap;
+        }
+        @font-face {
+          font-family: 'SuperSerene';
+          src: url(${SuperSerene}) format('truetype');
+          font-weight: 400;
+          font-style: normal;
+          font-display: swap;
+        }
+        @font-face {
+          font-family: 'SuperShiny';
+          src: url(${SuperShiny}) format('truetype');
+          font-weight: 400;
+          font-style: normal;
+          font-display: swap;
+        }
+
+        /* base font fallback */
+        body, .home-buttons, .home-buttons button { font-family: 'Sunny Spells', cursive; }
+
+        /* popup fonts: Title keeps Yorris Notes; message & note use new local fonts */
+        .popup-message { font-family: 'SuperSerene', 'Montserrat', sans-serif; }
+        .popup-note { font-family: 'Femmina', 'Quicksand', sans-serif; }
+
+        /* overlay placement default (desktop) */
+        .home-overlay {
+          position: absolute;
+          bottom: 5%;
+          left: 50%;
+          transform: translateX(-50%);
+          width: 100%;
+          z-index: 1;
+          display: flex;
+          justify-content: center;
+        }
+
+        /* buttons container: desktop (row) */
+        .home-buttons {
+          display: flex;
+          gap: 20px;
+          justify-content: center;
+          align-items: center;
+          flex-wrap: nowrap;
+        }
+
+        /* button visual defaults (equal sizing controlled here) */
+        .home-btn {
+          width: 260px;
+          height: 56px;
+          border-radius: 50px;
+          background: rgba(0,0,0,0.5);
+          color: #fff;
+          border: 2px solid rgba(255,255,255,0.28);
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          text-align: center;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          transition: transform 220ms cubic-bezier(.2,.9,.3,1), box-shadow 300ms ease, background 320ms ease, opacity 180ms ease;
+          font-size: 18px; /* desktop default font size for stronger presence */
+        }
+
+        .home-btn:hover,
+        .home-btn:focus,
+        .home-btn:focus-visible {
+          transform: translateY(-6px) scale(1.02);
+          box-shadow:
+            0 6px 20px rgba(176,3,3,0.18),
+            0 20px 50px rgba(176,3,3,0.22),
+            inset 0 1px 0 rgba(255,255,255,0.03);
+          background: linear-gradient(90deg, rgba(176,3,3,0.98), rgba(176,3,3,0.78) 60%, rgba(124,0,0,0.88));
+          border-color: rgba(255,255,255,0.18);
+          opacity: 1;
+        }
+
+        /* small screen: stack vertically, increase gap and move overlay up to avoid subject */
+        @media (max-width: 768px) {
+          .home-overlay {
+            bottom: auto;
+            top: 56%;
+            transform: translate(-50%, -6%);
+            padding: 0 18px;
+            pointer-events: auto;
           }
 
-          @media (max-width: 768px) {
-            .home-buttons {
-              flex-direction: column !important;
-              align-items: center !important;
-              gap: 15px !important;
-            }
-            
-            .home-buttons button {
-              padding: 12px 30px !important;
-              font-size: 18px !important;
-              border-radius: 45px !important;
-              min-width: 220px !important;
-            }
+          .home-buttons {
+            flex-direction: column;
+            gap: 18px;
+            align-items: center;
+            width: 100%;
+            max-width: 420px;
+            margin: 0 auto;
           }
-          
-          @media (max-width: 480px) {
-            .home-buttons {
-              flex-direction: column !important;
-              align-items: center !important;
-              gap: 12px !important;
-            }
-            
-            .home-buttons button {
-              padding: 12px 28px !important;
-              font-size: 17px !important;
-              border-radius: 45px !important;
-              min-width: 210px !important;
-            }
+
+          .home-btn {
+            width: 220px;
+            height: 52px;
+            font-size: 17px; /* slightly smaller on mobile */
+            min-width: 220px;
           }
-        `}
-      </style>
+        }
+
+        /* very small phones */
+        @media (max-width: 420px) {
+          .home-overlay { top: 60%; }
+          .home-buttons { gap: 14px; }
+          .home-btn { width: 200px; height: 48px; font-size: 15px; min-width: 200px; }
+        }
+
+        /* If user prefers reduced motion */
+        @media (prefers-reduced-motion: reduce) {
+          .home-btn { transition: none !important; transform: none !important; }
+        }
+          @font-face {
+  font-family: 'SFHand';
+  src: url(${SFHandRegular}) format('truetype');
+  font-weight: 400;
+}
+
+@font-face {
+  font-family: 'SFHandBold';
+  src: url(${SFHandBold}) format('truetype');
+  font-weight: 700;
+}
+
+@font-face {
+  font-family: 'SFHandItalic';
+  src: url(${SFHandItalic}) format('truetype');
+  font-style: italic;
+}
+
+@font-face {
+  font-family: 'SFHandSCItalic';
+  src: url(${SFHandSCItalic}) format('truetype');
+  font-style: italic;
+}
+
+
+      `}</style>
     </div>
   );
 };
@@ -240,8 +358,9 @@ const styles = {
     boxSizing: "border-box",
     minHeight: "100vh",
     overflow: "hidden",
-    backgroundColor: "transparent", // make sure container doesn't leak red
-    fontFamily: "'Sunny Spells', cursive", // apply Sunny Spells to page by default
+    backgroundColor: "transparent",
+    fontFamily: "'Sunny Spells', cursive",
+    position: "relative",
   },
 
   videoSection: {
@@ -257,17 +376,7 @@ const styles = {
     width: "100%",
     height: "100%",
     objectFit: "cover",
-    zIndex: -1,
-  },
-  overlay: {
-    position: "absolute",
-    bottom: "5%",
-    left: "50%",
-    transform: "translateX(-50%)",
-    textAlign: "center",
-    color: "#fff",
-    zIndex: 1,
-    width: "100%",
+    zIndex: -2,
   },
   buttons: {
     display: "flex",
@@ -275,6 +384,7 @@ const styles = {
     justifyContent: "center",
     flexWrap: "wrap",
   },
+
   imageSection: {
     position: "relative",
     width: "100%",
@@ -288,7 +398,7 @@ const styles = {
     width: "100%",
     height: "100%",
     objectFit: "cover",
-    zIndex: -1,
+    zIndex: -3,
   },
   imageOverlay: {
     position: "absolute",
@@ -313,57 +423,69 @@ const styles = {
     marginTop: "0",
   },
 
-  /* popup styles */
   popupBackdrop: {
     position: "fixed",
     inset: 0,
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "rgba(0,0,0,0.45)",
-    zIndex: 2000,
+    backgroundColor: "rgba(0,0,0,0.55)",
+    zIndex: 3000,
     padding: "20px",
-    backdropFilter: "blur(3px)",
+    backdropFilter: "blur(5px)",
+    animation: "fadeIn 0.4s ease-out",
   },
+
   popupCard: {
-  width: "min(420px, 92%)",
-  background: "rgba(255, 255, 255, 0.12)",   // transparent white
-  backdropFilter: "blur(12px)",              // strong glass blur
-  WebkitBackdropFilter: "blur(12px)",
-  borderRadius: "18px",
-  padding: "22px 24px",
-  boxShadow: "0 8px 32px rgba(0,0,0,0.25)",
-  textAlign: "center",
-  border: "1px solid rgba(255,255,255,0.25)", // glass border
-},
+    width: "min(420px, 94%)",
+    background: "rgba(255, 255, 255, 0.14)",
+    backdropFilter: "blur(14px)",
+    WebkitBackdropFilter: "blur(14px)",
+    borderRadius: "18px",
+    padding: "22px 24px",
+    boxShadow: "0 12px 45px rgba(0,0,0,0.35)",
+    textAlign: "center",
+    border: "1px solid rgba(255,255,255,0.35)",
+  },
 
-  popupTitle: {
+ popupTitle: {
   margin: 0,
-  fontSize: "1.25rem",
-  fontWeight: 700,
+  fontSize: "1.35rem",
+  fontFamily: "SFHandBold",
+  color: "rgba(180, 0, 0, 1)",
   letterSpacing: "0.3px",
-  fontFamily: "'Fredoka One', cursive",
-  color: "rgba(255, 0, 0, 0.9)",
-  textShadow: "0 2px 8px rgba(0,0,0,0.35)",
-},
-popupMessage: {
-  marginTop: 10,
-  fontSize: "14px",
-  lineHeight: 1.45,
-  fontFamily: "'Fredoka', sans-serif",
-  color: "rgba(255, 255, 255, 0.75)", 
+  paddingBottom: "8px",
 },
 
-popupNote: {
+  popupTitleUnderline: {
+    display: "block",
+    content: '""',
+    position: "absolute",
+    left: 0,
+    bottom: 0,
+    width: "100%",
+    height: "3px",
+    background: "rgba(255, 0, 0, 0.9)",
+    borderRadius: "2px",
+    animation: "widthGrow 900ms ease forwards",
+  },
+
+  popupMessage: {
   marginTop: 12,
-  fontSize: "12px",
-  lineHeight: 1.4,
-  fontFamily: "'Fredoka', sans-serif",
-  color: "rgba(255, 255, 255, 0.5)", // soft transparent
+  fontSize: "15px",
+  fontFamily: "SFHand",
+  lineHeight: 1.6,
+  color: "rgba(255, 255, 255, 0.92)",
 },
 
-
+ popupNote: {
+  marginTop: 12,
+  fontSize: "13px",
+  fontFamily: "SFHandSCItalic",
+  lineHeight: 1.45,
+  color: "rgba(255, 255, 255, 0.78)",
+  opacity: 0.95,
+},
 };
-
 
 export default Home;

@@ -6,10 +6,23 @@
 }
 
 /* Prevent horizontal scrolling (hides any tiny overflow) */
-html, body, #root {
+/* Prevent white flash on refresh */
+/* Global background color for entire website */
+html, body {
+  background-color: #B00303;
+  margin: 0;
+  padding: 0;
   height: 100%;
-  overflow-x: hidden; /* <<-- important: hides bottom scrollbar */
+  width: 100%;
 }
+
+footer {
+  position: relative !important;
+  z-index: 10 !important;
+}
+
+
+
 
 /* Make images/videos behave */
 img, video {
