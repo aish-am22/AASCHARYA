@@ -15,6 +15,12 @@ html, body {
   height: 100%;
   width: 100%;
 }
+@font-face {
+  font-family: "SFHandBold";
+  src: url("./assets/fonts/SF_Cartoonist_Hand_Bold.ttf") format("truetype");
+  font-weight: bold;
+}
+
 
 footer {
   position: relative !important;

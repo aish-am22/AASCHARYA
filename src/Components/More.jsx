@@ -68,18 +68,18 @@ const More = () => {
   };
 
   const doodleImgStyle = {
-    position: "absolute",
-    top: NAVBAR_HEIGHT,
-    left: 0,
-    width: "100%",
-    height: `calc(100% - ${NAVBAR_HEIGHT}px)`,
-    objectFit: "cover",
-    zIndex: 0,
-    pointerEvents: "none",
-    opacity: layout.isMobile ? 0.48 : 0.45,
-    transformOrigin: "center",
-    willChange: "transform, opacity",
-  };
+  position: "absolute",
+  top: NAVBAR_HEIGHT,
+  left: 0,
+  width: "100%",
+  height: `calc(100% - ${NAVBAR_HEIGHT}px)`,
+  objectFit: "cover",
+  zIndex: 0,
+  pointerEvents: "none",
+  opacity: 1,   // 👈 FULL OPAQUE
+  transformOrigin: "center",
+  willChange: "transform, opacity",
+};
 
   const doodleOverlayStyle = {
     position: "absolute",

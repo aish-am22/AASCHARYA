@@ -78,7 +78,7 @@ const Footer = () => {
       <style>{`
         .footer-main {
           width: 100%;
-          background-color: #d10f0fff;
+          background-color: #c00a0aff;
           padding: 20px 0;
           text-align: center;
           font-family: 'Sunny Spells', cursive !important;
@@ -106,7 +106,7 @@ const Footer = () => {
 
         .footer-link:hover {
           transform: translateY(-6px) scale(1.15);
-          color: #ffd700;
+          // color: #ffd700;
         }
 
         .footer-copy {
