@@ -70,7 +70,7 @@ const Footer = () => {
 
         {/* COPYRIGHT */}
         <div className="footer-copy">
-          © {new Date().getFullYear()} AASCHARYÁ. All rights reserved.
+          {/* © {new Date().getFullYear()} AASCHARYÁ. All rights reserved. */}
         </div>
       </div>
 

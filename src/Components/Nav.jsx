@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 
+/* Import the HowdyFriend font (TTF you added) */
+import HowdyFriend from "../assets/fonts/HowdyFriend-MABBY.ttf";
+
 const Navbar = () => {
   const [isMobile, setIsMobile] = useState(false);
 
@@ -17,12 +20,51 @@ const Navbar = () => {
       role="navigation"
       aria-label="Main navigation"
     >
+      {/* local font-face + nav styles */}
+      <style>{`
+        @font-face {
+          font-family: 'HowdyFriend';
+          src: url(${HowdyFriend}) format('truetype');
+          font-weight: 700;
+          font-style: normal;
+          font-display: swap;
+        }
+
+        /* Apply HowdyFriend to nav links only */
+        .nav-link {
+          font-family: 'HowdyFriend', sans-serif !important;
+          font-weight: 700 !important;
+          letter-spacing: 1px;
+          text-transform: uppercase;
+          text-decoration: none;
+          color: inherit;
+          display: inline-block;
+          transition: transform 160ms ease, color 180ms ease;
+          -webkit-font-smoothing: antialiased;
+          -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* hover affordance */
+        .nav-link:hover,
+        .nav-link:focus {
+          transform: translateY(-3px);
+          color: #f5f5f5;
+        }
+
+        /* Brand keeps its own font — do not use HowdyFriend */
+        .navbar-logo {
+          font-family: 'Rusty Hooks', cursive;
+          -webkit-font-smoothing: antialiased;
+          -moz-osx-font-smoothing: grayscale;
+        }
+      `}</style>
+
       {/* Brand */}
       <div style={isMobile ? styles.leftBrandMobile : styles.leftBrand}>
         <Link to="/" style={styles.brandLink} aria-label="Go to Home">
           <div
             style={isMobile ? styles.brandMobile : styles.brand}
-            className="brand-text"
+            className="brand-text navbar-logo"
           >
             AASCHARYÁ
           </div>
@@ -31,17 +73,17 @@ const Navbar = () => {
 
       {/* Links */}
       <div
-        style={
-          isMobile ? styles.linksContainerMobile : styles.linksContainer
-        }
+        style={isMobile ? styles.linksContainerMobile : styles.linksContainer}
       >
-        <Link to="/videos" style={isMobile ? styles.linkMobile : styles.link}>
+        <Link to="/videos" className="nav-link" style={isMobile ? styles.linkMobile : styles.link}>
           Channel
         </Link>
-        <Link to="/listen" style={isMobile ? styles.linkMobile : styles.link}>
+
+        <Link to="/listen" className="nav-link" style={isMobile ? styles.linkMobile : styles.link}>
           Listen
         </Link>
-        <Link to="/more" style={isMobile ? styles.linkMobile : styles.link}>
+
+        <Link to="/more" className="nav-link" style={isMobile ? styles.linkMobile : styles.link}>
           More
         </Link>
       </div>
@@ -52,38 +94,42 @@ const Navbar = () => {
 const styles = {
   /* === Desktop Navbar === */
   navbar: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center", // center container; brand is absolute
-    padding: "20px 60px",
-    position: "fixed",
-    top: 0,
-    left: 0,
-    right: 0,
-    width: "100%",
-    background: "transparent",
-    color: "red",
-    zIndex: 1000,
-    boxSizing: "border-box",
-  },
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  padding: "20px 60px",
+  position: "fixed",
+  top: 0,
+  left: 0,
+  right: 0,
+  width: "100%",
+  backgroundColor: "transparent",
+  backdropFilter: "none",
+  color: "white",
+  zIndex: 1000,
+  boxSizing: "border-box",
+  pointerEvents: "none",
+},
 
-  /* === Mobile Navbar (stacked) === */
-  navbarMobile: {
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    justifyContent: "center",
-    padding: "12px 16px 10px",
-    position: "fixed",
-    top: 0,
-    left: 0,
-    right: 0,
-    width: "100%",
-    background: "transparent",
-    color: "red",
-    zIndex: 1000,
-    boxSizing: "border-box",
-  },
+navbarMobile: {
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "center",
+  justifyContent: "center",
+  padding: "12px 16px 10px",
+  position: "fixed",
+  top: 0,
+  left: 0,
+  right: 0,
+  width: "100%",
+  backgroundColor: "transparent",
+  backdropFilter: "none",
+  color: "white",
+  zIndex: 1000,
+  boxSizing: "border-box",
+  pointerEvents: "none",
+},
+
 
   /* === Brand Desktop: pinned left === */
   leftBrand: {
@@ -110,10 +156,11 @@ const styles = {
     display: "flex",
     gap: "35px",
     marginRight: "60px",
-    marginLeft: "200px", // space so brand doesn't overlap links
+    marginLeft: "200px",
     justifyContent: "flex-end",
     width: "100%",
     maxWidth: "1200px",
+    pointerEvents: "auto",
   },
 
   /* === Links Mobile: centered row === */
@@ -124,13 +171,14 @@ const styles = {
     alignItems: "center",
     width: "100%",
     marginTop: 4,
+    pointerEvents: "auto",
   },
 
+  /* NOTE: removed fontFamily here so .nav-link font is used */
   link: {
     color: "white",
     textDecoration: "none",
-    fontFamily: "'Sunny Spells', cursive",
-    fontWeight: "400",
+    fontWeight: "700",
     fontSize: "20px",
     letterSpacing: "1px",
     transition: "color 0.3s ease, transform 0.2s ease",
@@ -140,8 +188,7 @@ const styles = {
   linkMobile: {
     color: "white",
     textDecoration: "none",
-    fontFamily: "'Sunny Spells', cursive",
-    fontWeight: "400",
+    fontWeight: "700",
     fontSize: "17px",
     letterSpacing: "0.5px",
     transition: "color 0.3s ease, transform 0.2s ease",
@@ -150,7 +197,7 @@ const styles = {
 
   /* === Brand styles === */
   brand: {
-    fontWeight: "bold",
+    fontWeight: "700",
     fontSize: "46px",
     fontFamily: "'Rusty Hooks', cursive",
     color: "white",
@@ -158,11 +205,12 @@ const styles = {
     transition: "transform 0.25s ease",
     lineHeight: 1,
     userSelect: "none",
+    pointerEvents: "auto",
   },
 
   /* Smaller logo on mobile */
   brandMobile: {
-    fontWeight: "bold",
+    fontWeight: "700",
     fontSize: "32px",
     fontFamily: "'Rusty Hooks', cursive",
     color: "white",
@@ -170,6 +218,7 @@ const styles = {
     transition: "transform 0.25s ease",
     lineHeight: 1,
     userSelect: "none",
+    pointerEvents: "auto",
   },
 
   brandLink: {
@@ -177,6 +226,7 @@ const styles = {
     cursor: "pointer",
     display: "inline-block",
     zIndex: 1101,
+    pointerEvents: "auto",
   },
 };
 

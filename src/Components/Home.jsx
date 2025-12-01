@@ -2,15 +2,15 @@ import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Image from "../assets/download.jpeg";
 
-/** local font imports — adjust names if your files differ **/
+/* Local font imports */
 import Femmina from "../assets/fonts/Femmina.ttf";
 import Nyc from "../assets/fonts/Nyc.ttf";
 import SuperSerene from "../assets/fonts/SuperSerene.ttf.ttf";
 import SuperShiny from "../assets/fonts/SuperShiny.ttf.ttf";
 import SFHandRegular from "../assets/fonts/SF_Cartoonist_Hand.ttf";
 import SFHandBold from "../assets/fonts/SF_Cartoonist_Hand_Bold.ttf";
-import SFHandItalic from "../assets/fonts/SF_Cartoonist_Hand_Italic.ttf";
-import SFHandSCItalic from "../assets/fonts/SF_Cartoonist_Hand_SC_Italic.ttf";
+import HowdyFriend from "../assets/fonts/HowdyFriend-MABBY.ttf";
+
 
 
 const Home = () => {
@@ -20,7 +20,6 @@ const Home = () => {
 
   useEffect(() => {
     const fonts = [
-      
       { href: "https://fonts.cdnfonts.com/css/yorris-notes", id: "yorris-notes-css" },
       { href: "https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&display=swap", id: "montserrat-css" },
       { href: "https://fonts.googleapis.com/css2?family=Quicksand:wght@500;600&display=swap", id: "quicksand-css" },
@@ -51,7 +50,6 @@ const Home = () => {
     };
   }, []);
 
-  // Focus the OK button when popup opens and add ESC to close
   useEffect(() => {
     if (showPopup) okBtnRef.current?.focus();
 
@@ -68,16 +66,15 @@ const Home = () => {
   const handleLyricalVideoClick = () =>
     window.open("https://www.youtube.com/watch?v=YOUR_LYRICAL_VIDEO_ID", "_blank");
 
-  // visual-only base for buttons; widths handled via CSS so all are equal
   const buttonStyle = {
-    borderRadius: "50px",
-    fontWeight: 700,
-    fontFamily: "'Sunny Spells', cursive",
+    borderRadius: "40px",
+    fontWeight: 800,
+    fontFamily: "'BearDays', sans-serif",
     cursor: "pointer",
     overflow: "hidden",
-    transition: "transform 220ms ease, box-shadow 300ms ease, background 320ms ease, opacity 180ms ease",
-    border: "2px solid rgba(255, 255, 255, 0.28)",
-    backgroundColor: "rgba(0,0,0,0.5)",
+    transition: "transform 180ms ease, box-shadow 220ms ease, opacity 160ms ease",
+    border: "2px solid rgba(255,255,255,0.18)",
+    backgroundColor: "rgba(0,0,0,0.55)",
     color: "#fff",
     boxSizing: "border-box",
     padding: "0 18px",
@@ -85,13 +82,15 @@ const Home = () => {
     display: "inline-flex",
     alignItems: "center",
     justifyContent: "center",
+    textTransform: "uppercase",
+    letterSpacing: "1px",
   };
 
   const popupOkStyle = {
     padding: "10px 20px",
     borderRadius: "10px",
     fontSize: "16px",
-    fontFamily: "'Fredoka One', cursive",
+    fontFamily: "'SFHandBold', sans-serif",
     cursor: "pointer",
     border: "none",
     backgroundColor: "white",
@@ -101,7 +100,6 @@ const Home = () => {
 
   return (
     <div className="home-root" style={styles.container}>
-      {/* Popup overlay */}
       {showPopup && (
         <div
           role="dialog"
@@ -116,7 +114,6 @@ const Home = () => {
           >
             <h3 style={styles.popupTitle}>
               AASCHARYÁ — Coming December 2025
-              <span style={styles.popupTitleUnderline}></span>
             </h3>
 
             <p style={styles.popupMessage}>
@@ -151,7 +148,6 @@ const Home = () => {
           style={styles.video}
         />
 
-        {/* Overlay controlled by CSS for responsive behavior */}
         <div className="home-overlay">
           <div className="home-buttons" style={styles.buttons}>
             <button
@@ -160,7 +156,7 @@ const Home = () => {
               onClick={handleListenClick}
               aria-label="Listen / Stream"
             >
-              Listen/Stream
+              LISTEN / STREAM
             </button>
 
             <button
@@ -169,7 +165,7 @@ const Home = () => {
               onClick={handleMusicVideoClick}
               aria-label="Watch The Music Video"
             >
-              Watch The Music Video
+              WATCH THE MUSIC VIDEO
             </button>
 
             <button
@@ -178,7 +174,7 @@ const Home = () => {
               onClick={handleLyricalVideoClick}
               aria-label="Watch The Lyrical Video"
             >
-              Watch The Lyrical Video
+              WATCH THE LYRICAL VIDEO
             </button>
           </div>
         </div>
@@ -194,42 +190,69 @@ const Home = () => {
 
       {/* custom fonts + responsive styling */}
       <style>{`
-        /* Register your local fonts (imported above via JS imports) */
-        @font-face {
-          font-family: 'Femmina';
-          src: url(${Femmina}) format('truetype');
-          font-weight: 400;
-          font-style: normal;
-          font-display: swap;
-        }
+        /* Register local fonts */
+       @font-face {
+  font-family: 'HowdyFriend';
+  src: url(${HowdyFriend}) format('truetype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+
         @font-face {
           font-family: 'NYC';
           src: url(${Nyc}) format('truetype');
-          font-weight: 400;
+          font-weight: 700;
           font-style: normal;
           font-display: swap;
         }
+
         @font-face {
-          font-family: 'SuperSerene';
-          src: url(${SuperSerene}) format('truetype');
-          font-weight: 400;
-          font-style: normal;
-          font-display: swap;
-        }
-        @font-face {
-          font-family: 'SuperShiny';
-          src: url(${SuperShiny}) format('truetype');
+          font-family: 'SFHand';
+          src: url(${SFHandRegular}) format('truetype');
           font-weight: 400;
           font-style: normal;
           font-display: swap;
         }
 
-        /* base font fallback */
+        @font-face {
+          font-family: 'SFHandBold';
+          src: url(${SFHandBold}) format('truetype');
+          font-weight: 700;
+          font-style: normal;
+          font-display: swap;
+        }
+
+        /* Base fallback */
         body, .home-buttons, .home-buttons button { font-family: 'Sunny Spells', cursive; }
 
-        /* popup fonts: Title keeps Yorris Notes; message & note use new local fonts */
-        .popup-message { font-family: 'SuperSerene', 'Montserrat', sans-serif; }
-        .popup-note { font-family: 'Femmina', 'Quicksand', sans-serif; }
+        /* Button-specific styling: BearDays only for buttons */
+       .home-btn {
+  font-family: 'HowdyFriend', sans-serif !important;
+  font-weight: 700 !important;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  font-size: 20px;
+}
+
+
+        /* Remove red glows — subtle neutral hover instead */
+        .home-btn {
+          transition: transform 180ms ease, box-shadow 220ms ease, background 220ms ease;
+        }
+
+        .home-btn:hover,
+        .home-btn:focus,
+        .home-btn:focus-visible {
+          transform: translateY(-6px) scale(1.02);
+          box-shadow:
+            0 10px 30px rgba(0,0,0,0.30),
+            inset 0 1px 0 rgba(255,255,255,0.03);
+          background: linear-gradient(90deg, rgba(0,0,0,0.64), rgba(18,18,18,0.62));
+          border-color: rgba(255,255,255,0.22);
+          outline: none;
+        }
 
         /* overlay placement default (desktop) */
         .home-overlay {
@@ -243,7 +266,6 @@ const Home = () => {
           justify-content: center;
         }
 
-        /* buttons container: desktop (row) */
         .home-buttons {
           display: flex;
           gap: 20px;
@@ -252,39 +274,7 @@ const Home = () => {
           flex-wrap: nowrap;
         }
 
-        /* button visual defaults (equal sizing controlled here) */
-        .home-btn {
-          width: 260px;
-          height: 56px;
-          border-radius: 50px;
-          background: rgba(0,0,0,0.5);
-          color: #fff;
-          border: 2px solid rgba(255,255,255,0.28);
-          display: inline-flex;
-          align-items: center;
-          justify-content: center;
-          text-align: center;
-          white-space: nowrap;
-          overflow: hidden;
-          text-overflow: ellipsis;
-          transition: transform 220ms cubic-bezier(.2,.9,.3,1), box-shadow 300ms ease, background 320ms ease, opacity 180ms ease;
-          font-size: 18px; /* desktop default font size for stronger presence */
-        }
-
-        .home-btn:hover,
-        .home-btn:focus,
-        .home-btn:focus-visible {
-          transform: translateY(-6px) scale(1.02);
-          box-shadow:
-            0 6px 20px rgba(176,3,3,0.18),
-            0 20px 50px rgba(176,3,3,0.22),
-            inset 0 1px 0 rgba(255,255,255,0.03);
-          background: linear-gradient(90deg, rgba(176,3,3,0.98), rgba(176,3,3,0.78) 60%, rgba(124,0,0,0.88));
-          border-color: rgba(255,255,255,0.18);
-          opacity: 1;
-        }
-
-        /* small screen: stack vertically, increase gap and move overlay up to avoid subject */
+        /* small screen: stack vertically */
         @media (max-width: 768px) {
           .home-overlay {
             bottom: auto;
@@ -306,47 +296,25 @@ const Home = () => {
           .home-btn {
             width: 220px;
             height: 52px;
-            font-size: 17px; /* slightly smaller on mobile */
+            font-size: 17px;
             min-width: 220px;
           }
         }
 
-        /* very small phones */
         @media (max-width: 420px) {
           .home-overlay { top: 60%; }
           .home-buttons { gap: 14px; }
           .home-btn { width: 200px; height: 48px; font-size: 15px; min-width: 200px; }
         }
 
-        /* If user prefers reduced motion */
+        /* Respect reduced motion */
         @media (prefers-reduced-motion: reduce) {
           .home-btn { transition: none !important; transform: none !important; }
         }
-          @font-face {
-  font-family: 'SFHand';
-  src: url(${SFHandRegular}) format('truetype');
-  font-weight: 400;
-}
 
-@font-face {
-  font-family: 'SFHandBold';
-  src: url(${SFHandBold}) format('truetype');
-  font-weight: 700;
-}
-
-@font-face {
-  font-family: 'SFHandItalic';
-  src: url(${SFHandItalic}) format('truetype');
-  font-style: italic;
-}
-
-@font-face {
-  font-family: 'SFHandSCItalic';
-  src: url(${SFHandSCItalic}) format('truetype');
-  font-style: italic;
-}
-
-
+        /* Popup / text fonts kept non-italic */
+        .popup-message { font-family: 'SuperSerene', 'Montserrat', sans-serif; font-style: normal; }
+        .popup-note { font-family: 'Femmina', 'Quicksand', sans-serif; font-style: normal; }
       `}</style>
     </div>
   );
@@ -457,33 +425,20 @@ const styles = {
   paddingBottom: "8px",
 },
 
-  popupTitleUnderline: {
-    display: "block",
-    content: '""',
-    position: "absolute",
-    left: 0,
-    bottom: 0,
-    width: "100%",
-    height: "3px",
-    background: "rgba(255, 0, 0, 0.9)",
-    borderRadius: "2px",
-    animation: "widthGrow 900ms ease forwards",
-  },
-
   popupMessage: {
   marginTop: 12,
   fontSize: "15px",
   fontFamily: "SFHand",
   lineHeight: 1.6,
-  color: "rgba(255, 255, 255, 0.92)",
+  color: "rgba(255,255,255,0.92)",
 },
 
  popupNote: {
   marginTop: 12,
   fontSize: "13px",
-  fontFamily: "SFHandSCItalic",
+  fontFamily: "SFHand",
   lineHeight: 1.45,
-  color: "rgba(255, 255, 255, 0.78)",
+  color: "rgba(255,255,255,0.78)",
   opacity: 0.95,
 },
 };

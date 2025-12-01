@@ -1,7 +1,6 @@
-// Bts.jsx — optimized & cleaned
+// Bts.jsx — Clean version (NO footer, NO collab)
 import React, { useCallback, useEffect, useRef, useState, useMemo } from "react";
 import DoodleBG from "../assets/Mobile view phone view final.svg";
-import CollaborationSection from "./Collab"; // adjust path if different
 
 const images = [
   "https://images.unsplash.com/photo-1511376777868-611b54f68947?auto=format&fit=crop&w=1600&q=80",
@@ -14,41 +13,38 @@ const images = [
 const rotations = [-8, -4, -2, 2, 5, 8];
 
 const Bts = () => {
-  // layout like More.jsx
-  const [layout, setLayout] = useState({ navHeight: 90, footerHeight: 80, isMobile: false });
-  useEffect(() => {
-    const computeLayout = () => {
-      const w = window.innerWidth;
-      if (w <= 480) return { navHeight: 64, footerHeight: 64, isMobile: true };
-      if (w <= 900) return { navHeight: 72, footerHeight: 72, isMobile: false };
-      return { navHeight: 90, footerHeight: 80, isMobile: false };
-    };
+  const [layout, setLayout] = useState({ navHeight: 90, isMobile: false });
 
-    const onResize = () => setLayout(computeLayout());
-    setLayout(computeLayout());
+  useEffect(() => {
+    const compute = () => {
+      const w = window.innerWidth;
+      if (w <= 480) return { navHeight: 64, isMobile: true };
+      if (w <= 900) return { navHeight: 72, isMobile: false };
+      return { navHeight: 90, isMobile: false };
+    };
+    const onResize = () => setLayout(compute());
+    setLayout(compute());
     window.addEventListener("resize", onResize);
     return () => window.removeEventListener("resize", onResize);
   }, []);
 
-  // apply body class instead of direct style mutation for easier cleanup
   useEffect(() => {
     document.body.classList.add("bts-body-bg");
     return () => document.body.classList.remove("bts-body-bg");
   }, []);
 
-  // hero / gallery state
   const [currentHero, setCurrentHero] = useState(0);
   const [isHoveringHero, setIsHoveringHero] = useState(false);
   const heroTimer = useRef(null);
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState(0);
 
-  // grid columns / narrow detection
+  // Columns
   const [cols, setCols] = useState(3);
   const [isNarrow, setIsNarrow] = useState(false);
 
   useEffect(() => {
-    const onResizeCols = () => {
+    const fn = () => {
       const w = window.innerWidth;
       setIsNarrow(w <= 760);
       if (w >= 1200) setCols(4);
@@ -56,12 +52,12 @@ const Bts = () => {
       else if (w >= 600) setCols(2);
       else setCols(1);
     };
-    onResizeCols();
-    window.addEventListener("resize", onResizeCols);
-    return () => window.removeEventListener("resize", onResizeCols);
+    fn();
+    window.addEventListener("resize", fn);
+    return () => window.removeEventListener("resize", fn);
   }, []);
 
-  // autoplay control
+  // Autoplay
   const startHeroAutoplay = useCallback(() => {
     if (heroTimer.current) return;
     if (isHoveringHero) return;
@@ -78,19 +74,19 @@ const Bts = () => {
   }, []);
 
   useEffect(() => {
-    // run whenever hover state changes
     stopHeroAutoplay();
     if (!isHoveringHero) startHeroAutoplay();
     return stopHeroAutoplay;
   }, [isHoveringHero, startHeroAutoplay, stopHeroAutoplay]);
 
-  // parallax-like hero move on scroll (rAF throttled)
+  // Hero parallax
   const heroRef = useRef(null);
   const rafRef = useRef(null);
+
   useEffect(() => {
     const onScroll = () => {
       if (!heroRef.current) return;
-      if (rafRef.current) return; // rAF already queued
+      if (rafRef.current) return;
       rafRef.current = requestAnimationFrame(() => {
         const rect = heroRef.current.getBoundingClientRect();
         const mid = rect.top + rect.height / 2 - window.innerHeight / 2;
@@ -107,61 +103,32 @@ const Bts = () => {
     };
   }, []);
 
-  // Lightbox handlers (keyboard)
+  // Lightbox keyboard
   useEffect(() => {
     if (!lightboxOpen) return;
-    const onKey = (e) => {
-      if (e.key === "Escape") closeLightbox();
-      if (e.key === "ArrowLeft") prevLightbox();
-      if (e.key === "ArrowRight") nextLightbox();
+    const key = (e) => {
+      if (e.key === "Escape") setLightboxOpen(false);
+      if (e.key === "ArrowLeft") setLightboxIndex((i) => (i - 1 + images.length) % images.length);
+      if (e.key === "ArrowRight") setLightboxIndex((i) => (i + 1) % images.length);
     };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    window.addEventListener("keydown", key);
+    return () => window.removeEventListener("keydown", key);
   }, [lightboxOpen]);
 
+  // Lightbox scroll lock
   useEffect(() => {
     if (lightboxOpen) {
-      const el = document.getElementById("bts-lightbox");
-      if (el) el.focus();
-      // prevent page scroll while open
-      document.documentElement.style.overflow = "hidden";
       document.body.style.overflow = "hidden";
     } else {
-      document.documentElement.style.overflow = "";
       document.body.style.overflow = "";
     }
-    return () => {
-      document.documentElement.style.overflow = "";
-      document.body.style.overflow = "";
-    };
   }, [lightboxOpen]);
 
-  const openLightbox = useCallback((i) => {
-    setLightboxIndex(i);
-    setLightboxOpen(true);
-  }, []);
-
-  const closeLightbox = useCallback(() => {
-    setLightboxOpen(false);
-  }, []);
-
-  const prevLightbox = useCallback(() => {
-    setLightboxIndex((i) => (i - 1 + images.length) % images.length);
-  }, []);
-
-  const nextLightbox = useCallback(() => {
-    setLightboxIndex((i) => (i + 1) % images.length);
-  }, []);
-
-  const openImageNewTab = useCallback((url) => {
-    window.open(url, "_blank", "noopener,noreferrer");
-  }, []);
-
-  // Polaroid thumb tilt effect (desktop only)
+  // Polaroid hover
   const handleThumbMove = useCallback((e) => {
+    if (window.innerWidth <= 760) return;
     const frame = e.currentTarget.querySelector(".polaroid-frame");
-    if (!frame || window.innerWidth <= 760) return;
+    if (!frame) return;
     const rect = frame.getBoundingClientRect();
     const cx = rect.left + rect.width / 2;
     const cy = rect.top + rect.height / 2;
@@ -169,80 +136,41 @@ const Bts = () => {
     const dy = e.clientY - cy;
     const px = (dx / rect.width) * 10;
     const py = (dy / rect.height) * -6;
-    frame.style.transform = `rotateX(${py}deg) rotateY(${px}deg) translateZ(8px) scale(1.01)`;
-    frame.style.boxShadow = "0 36px 90px rgba(0,0,0,0.55)";
+    frame.style.transform = `rotateX(${py}deg) rotateY(${px}deg) scale(1.01)`;
   }, []);
 
   const resetThumb = useCallback((e) => {
     const frame = e.currentTarget.querySelector(".polaroid-frame");
     if (!frame) return;
     frame.style.transform = frame.dataset.baseTransform || "";
-    frame.style.boxShadow = "";
   }, []);
 
-  // === DYNAMIC STOP: measure collab height and set doodle spacer bottom accordingly ===
-  const collabWrapperRef = useRef(null);
-  const [doodleBottom, setDoodleBottom] = useState(layout.footerHeight);
-
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-
-    const measure = () => {
-      const collabH = collabWrapperRef.current ? collabWrapperRef.current.offsetHeight : 0;
-      setDoodleBottom(layout.footerHeight + collabH);
-    };
-
-    measure();
-
-    let ro;
-    if (window.ResizeObserver && collabWrapperRef.current) {
-      ro = new ResizeObserver(measure);
-      ro.observe(collabWrapperRef.current);
-    }
-
-    const onResize = () => measure();
-    window.addEventListener("resize", onResize);
-
-    return () => {
-      window.removeEventListener("resize", onResize);
-      if (ro && collabWrapperRef.current) ro.unobserve(collabWrapperRef.current);
-    };
-  }, [layout.footerHeight]);
-
-  // memoized thumb component to avoid recreation
+  // Polaroid component
   const PolaroidThumb = useMemo(() => {
-    return React.memo(function Thumb({ src, i, onClick, alt }) {
+    return React.memo(function Thumb({ src, i, onClick }) {
       const rot = rotations[i % rotations.length];
-      const wrapperStyle = {
+      const frameStyle = {
         transform: `rotate(${rot}deg)`,
-        transition: "transform 250ms ease, box-shadow 220ms ease",
+        transition: "transform 250ms ease",
       };
-
-      const thumbImgStyle = {
-        ...s.polaroidImg,
-        ...(isNarrow ? s.polaroidImgMobile : {}),
-      };
-
-      const frameStyle = { ...s.polaroid, ...(isNarrow ? s.polaroidMobile : {}) };
 
       return (
         <figure
           role="button"
           tabIndex={0}
           onClick={onClick}
-          onKeyDown={(e) => (e.key === "Enter" ? onClick() : null)}
-          style={{ ...s.polaroidWrapper, ...wrapperStyle }}
-          aria-label={`Open shoot image ${i + 1}`}
+          onKeyDown={(e) => e.key === "Enter" && onClick()}
+          style={{ ...s.polaroidWrapper, ...frameStyle }}
           onMouseMove={handleThumbMove}
           onMouseLeave={resetThumb}
         >
           <div
-            style={frameStyle}
-            className={`polaroid-frame ${isNarrow ? "enter" : ""}`}
+            className="polaroid-frame"
             data-base-transform={`rotate(${rot}deg)`}
+            style={s.polaroid}
           >
-            <img src={src} alt={alt} loading="lazy" style={thumbImgStyle} draggable={false} />
-            <div style={isNarrow ? { ...s.polaroidCaption, ...s.polaroidCaptionMobile } : s.polaroidCaption}>
+            <img src={src} alt="" loading="lazy" style={s.polaroidImg} draggable={false} />
+            <div style={s.polaroidCaption}>
               <div style={s.captionTitle}>Shoot • Day {i + 1}</div>
               <div style={s.captionSub}>Tap to enlarge</div>
             </div>
@@ -250,17 +178,17 @@ const Bts = () => {
         </figure>
       );
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isNarrow, handleThumbMove, resetThumb]);
+  }, [handleThumbMove, resetThumb]);
 
-  // Hero element
+  // Hero
   const Hero = useCallback(() => {
-    const heroRotation = rotations[currentHero % rotations.length] / 2;
+    const rot = rotations[currentHero % rotations.length] / 2;
+
     return (
       <div style={s.heroWrap}>
         <div
           ref={heroRef}
-          style={{ ...s.hero, transform: "translateY(0)" }}
+          style={s.hero}
           onMouseEnter={() => {
             setIsHoveringHero(true);
             stopHeroAutoplay();
@@ -269,49 +197,25 @@ const Bts = () => {
             setIsHoveringHero(false);
             startHeroAutoplay();
           }}
-          role="button"
-          tabIndex={0}
-          aria-label="Open hero photo"
         >
           <div style={s.heroPolaroidWrap}>
             <div
-              className="hero-polaroid polaroid-frame"
+              className="polaroid-frame"
               style={{
                 ...s.polaroid,
                 ...s.heroPolaroid,
-                transform: `rotate(${heroRotation}deg) scale(1)`,
-                border: "1px solid rgba(255,255,255,0.95)",
+                transform: `rotate(${rot}deg)`,
               }}
-              onClick={() => openLightbox(currentHero)}
-              onMouseMove={(e) => {
-                if (window.innerWidth <= 760) return;
-                const el = e.currentTarget;
-                const rect = el.getBoundingClientRect();
-                const cx = rect.left + rect.width / 2;
-                const cy = rect.top + rect.height / 2;
-                const dx = e.clientX - cx;
-                const dy = e.clientY - cy;
-                const px = (dx / rect.width) * 6;
-                const py = (dy / rect.height) * -4;
-                el.style.transform = `rotate(${heroRotation}deg) rotateX(${py}deg) rotateY(${px}deg) translateZ(8px) scale(1.01)`;
-                el.style.boxShadow = "0 40px 90px rgba(0,0,0,0.66)";
-              }}
-              onMouseLeave={(e) => {
-                const el = e.currentTarget;
-                el.style.transform = `rotate(${heroRotation}deg) scale(1)`;
-                el.style.boxShadow = s.polaroid.boxShadow;
-              }}
+              onClick={() => setLightboxOpen(true) || setLightboxIndex(currentHero)}
             >
               <img
                 src={images[currentHero]}
-                alt={`BTS ${currentHero + 1}`}
-                loading="eager"
                 style={{ ...s.polaroidImg, ...s.heroPolaroidImg }}
-                draggable={false}
               />
+
               <div style={{ ...s.polaroidCaption, ...s.heroCaptionOverride }}>
                 <div style={{ ...s.captionTitle, fontSize: 18 }}>Behind the Scenes</div>
-                <div style={{ ...s.captionSub, fontSize: 13 }}>Moments from the shoot — tap to enlarge</div>
+                <div style={{ ...s.captionSub, fontSize: 13 }}>Tap to enlarge</div>
               </div>
             </div>
           </div>
@@ -321,115 +225,58 @@ const Bts = () => {
           {images.map((_, i) => (
             <button
               key={i}
-              aria-label={`Go to slide ${i + 1}`}
-              onClick={() => setCurrentHero(i)}
               style={i === currentHero ? s.dotActive : s.dot}
+              onClick={() => setCurrentHero(i)}
             />
           ))}
         </div>
       </div>
     );
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentHero, startHeroAutoplay, stopHeroAutoplay]);
 
   return (
-    <main style={{ ...s.page, paddingTop: layout.navHeight, paddingBottom: 0 }}>
-      {/* doodle background */}
+    <main style={{ ...s.page, paddingTop: layout.navHeight }}>
+
+      {/* DOODLE BG — no clipping needed now */}
       <img
         src={DoodleBG}
-        alt=""
         style={{
           ...s.doodleImgStyle,
           top: layout.navHeight,
           height: `calc(100% - ${layout.navHeight}px)`,
-          opacity: 1,
         }}
         className="bts-doodle"
-      />
-
-      {/* spacer overlay that prevents doodle under collab/footer — bottom set dynamically */}
-      <div
-        style={{
-          position: "fixed",
-          top: layout.navHeight,
-          left: 0,
-          right: 0,
-          bottom: doodleBottom,
-          background: "transparent",
-          zIndex: 1,
-          pointerEvents: "none",
-        }}
-        aria-hidden="true"
       />
 
       <Hero />
 
       <section style={s.gridWrap}>
-        <div
-          style={{
-            ...s.grid,
-            gridTemplateColumns: `repeat(${cols}, 1fr)`,
-            gap: isNarrow ? 18 : 30,
-          }}
-        >
+        <div style={{ ...s.grid, gridTemplateColumns: `repeat(${cols}, 1fr)` }}>
           {images.map((src, i) => (
-            <PolaroidThumb key={i} src={src} i={i} alt={`Shoot ${i + 1}`} onClick={() => openLightbox(i)} />
+            <PolaroidThumb
+              key={i}
+              src={src}
+              i={i}
+              onClick={() => {
+                setLightboxIndex(i);
+                setLightboxOpen(true);
+              }}
+            />
           ))}
         </div>
       </section>
 
-      {/* Collab wrapped in a div we measure to compute doodle stop. No bottom margin so it sits flush with footer. */}
-      <div
-        ref={collabWrapperRef}
-        style={{
-          width: "100%",
-          zIndex: 1,
-          position: "relative",
-          margin: 0,
-          paddingBottom: 0,
-          backgroundColor: "transparent",
-        }}
-      >
-        {/* force Collab to use same footer color & be fully opaque so the transition is seamless */}
-        <div style={{ backgroundColor: "#c00a0aff", opacity: 1, width: "100%", borderTopLeftRadius: 0, borderTopRightRadius: 0 }}>
-          <CollaborationSection />
-        </div>
-      </div>
-
       {lightboxOpen && (
         <div
-          id="bts-lightbox"
-          role="dialog"
-          aria-modal="true"
-          tabIndex={-1}
           style={s.lightboxOverlay}
-          onClick={(e) => {
-            if (e.target === e.currentTarget) closeLightbox();
-          }}
+          onClick={(e) => e.target === e.currentTarget && setLightboxOpen(false)}
         >
           <div style={s.lightboxInner}>
-            <img src={images[lightboxIndex]} alt={`Large ${lightboxIndex + 1}`} style={s.lightboxImg} />
-            <div style={s.lightboxFooter}>
-              <div style={s.lightboxInfo}>
-                <strong style={{ fontSize: 14 }}>Shoot • Day {lightboxIndex + 1}</strong>
-                <div style={{ fontSize: 13, color: "rgba(255,255,255,0.85)" }}>High-res capture</div>
-              </div>
-
-              <div style={s.lightboxActions}>
-                <button style={s.actionBtn} onClick={() => prevLightbox()} aria-label="Previous">‹ Prev</button>
-                <button style={s.actionBtn} onClick={() => openImageNewTab(images[lightboxIndex])} aria-label="Open in new tab">Open</button>
-                <button style={s.actionBtn} onClick={() => nextLightbox()} aria-label="Next">Next ›</button>
-              </div>
-            </div>
+            <img src={images[lightboxIndex]} style={s.lightboxImg} />
 
             <button
-              type="button"
-              style={{ ...s.closeBtn, zIndex: 10002, pointerEvents: "auto" }}
-              onClick={(e) => {
-                e.stopPropagation();
-                closeLightbox();
-              }}
-              aria-label="Close"
+              style={s.closeBtn}
+              onClick={() => setLightboxOpen(false)}
             >
               ✕
             </button>
@@ -437,105 +284,197 @@ const Bts = () => {
         </div>
       )}
 
-      <style>{`
-        .bts-doodle {
-          position: fixed;
-          left: 0;
-          width: 100%;
-          object-fit: cover;
-          z-index: 0;
-          pointer-events: none;
-          filter: saturate(0.98) contrast(0.98) blur(0.2px);
-          will-change: transform, opacity;
-          animation: floaty 12s ease-in-out infinite;
-          opacity: 1 !important;
-        }
-        @keyframes floaty {
-          0% { transform: translateY(0px) scale(1); opacity: 1; }
-          25% { transform: translateY(-8px) scale(1.01); opacity: 1; }
-          50% { transform: translateY(0px) scale(1); opacity: 1; }
-          75% { transform: translateY(6px) scale(1.005); opacity: 1; }
-          100% { transform: translateY(0px) scale(1); opacity: 1; }
-        }
+      <style>
+        {`
+          html, body {
+            margin: 0 !important;
+            padding: 0 !important;
+            overflow-x: hidden;
+          }
 
-        /* ensure footer stays opaque above doodle */
-        footer,
-        .footer,
-        .site-footer,
-        #footer {
-          background-color: #c00a0aff !important;
-          opacity: 1 !important;
-          backdrop-filter: none !important;
-          -webkit-backdrop-filter: none !important;
-          position: relative !important;
-          z-index: 10 !important;
-        }
+          .bts-doodle {
+            position: fixed;
+            left: 0;
+            width: 100%;
+            object-fit: cover;
+            z-index: 0;
+            pointer-events: none;
+          }
 
-        /* body bg class added/removed by component */
-        .bts-body-bg {
-          background-color: #B00303 !important;
-          margin: 0 !important;
-        }
-
-        @media (prefers-reduced-motion: reduce) {
-          .bts-doodle { animation: none !important; transition: none !important; }
-        }
-      `}</style>
+          .bts-body-bg {
+            background-color: #B00303 !important;
+          }
+        `}
+      </style>
     </main>
   );
 };
 
 export default Bts;
 
-/* styles object (kept compact & same structure as before) */
 const s = {
   page: {
     minHeight: "100vh",
     width: "100%",
-    boxSizing: "border-box",
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
-    overflowX: "hidden",
-    backgroundColor: "#B00303",
+    background: "#B00303",
     position: "relative",
     zIndex: 2,
+    overflowX: "hidden",
   },
+
   doodleImgStyle: {
     position: "fixed",
     left: 0,
     width: "100%",
     objectFit: "cover",
     zIndex: 0,
-    pointerEvents: "none",
-    opacity: 1,
   },
-  heroWrap: { width: "100%", maxWidth: 1200, margin: "12px auto 24px", padding: "8px", boxSizing: "border-box", zIndex: 3 },
-  hero: { position: "relative", height: "56vh", minHeight: 320, borderRadius: 18, overflow: "visible", boxShadow: "none", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" },
-  heroPolaroidWrap: { width: "100%", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 4, pointerEvents: "auto" },
-  grid: { display: "grid", width: "100%", maxWidth: 1200, margin: "0 auto", boxSizing: "border-box" },
-  gridWrap: { width: "100%", maxWidth: 1200, margin: "20px auto 24px", boxSizing: "border-box", padding: "0 20px", zIndex: 3 },
-  polaroidWrapper: { display: "inline-block", width: "100%", breakInside: "avoid", cursor: "pointer", marginBottom: 0 },
-  polaroid: { width: "100%", maxWidth: "100%", margin: "0 auto", background: "linear-gradient(180deg, #fff 0%, #f6f6f6 100%)", borderRadius: 10, paddingBottom: 12, boxSizing: "border-box", boxShadow: "0 18px 48px rgba(0,0,0,0.45)", border: "1px solid rgba(255,255,255,0.95)", transformOrigin: "center center", transition: "transform 220ms ease, box-shadow 220ms ease", overflow: "hidden", cursor: "pointer" },
-  polaroidMobile: { maxWidth: "100%", paddingBottom: 10, borderRadius: 8 },
-  heroPolaroid: { maxWidth: 920, width: "92%", paddingBottom: 16, borderRadius: 14, boxShadow: "0 28px 90px rgba(0,0,0,0.6), 0 8px 30px rgba(176,3,3,0.06)", border: "1px solid rgba(255,255,255,0.95)", background: "linear-gradient(180deg, #ffffff 0%, #f6f6f6 100%)" },
-  polaroidImg: { width: "100%", display: "block", objectFit: "cover", borderTopLeftRadius: 8, borderTopRightRadius: 8, height: "auto", maxHeight: 360 },
-  polaroidImgMobile: { objectFit: "contain", height: "auto", maxHeight: "50vh" },
-  heroPolaroidImg: { height: "56vh", maxHeight: "68vh", objectFit: "cover", borderTopLeftRadius: 10, borderTopRightRadius: 10 },
-  polaroidCaption: { padding: "10px 12px 14px", background: "transparent", textAlign: "center", color: "rgba(0,0,0,0.8)" },
-  polaroidCaptionMobile: { padding: "10px 10px 12px" },
-  captionTitle: { fontFamily: "'Sunny Spells', cursive", fontSize: 14, marginBottom: 4, color: "rgba(0,0,0,0.9)" },
-  captionSub: { fontSize: 12, color: "rgba(0,0,0,0.6)" },
-  heroCaptionOverride: { color: "rgba(0,0,0,0.9)" },
-  dots: { display: "flex", gap: 10, justifyContent: "center", marginTop: 12 },
-  dot: { width: 8, height: 8, borderRadius: 8, background: "rgba(255,255,255,0.45)", border: "none", cursor: "pointer", transition: "all 220ms ease" },
-  dotActive: { width: 12, height: 12, borderRadius: 12, background: "#FFD700", border: "none", cursor: "pointer", transition: "all 220ms ease" },
-  lightboxOverlay: { position: "fixed", inset: 0, background: "rgba(0,0,0,0.92)", zIndex: 9999, display: "flex", alignItems: "center", justifyContent: "center", padding: 20 },
-  lightboxInner: { position: "relative", maxWidth: "96%", maxHeight: "94%", width: "100%", display: "flex", flexDirection: "column", alignItems: "center", pointerEvents: "auto", zIndex: 10001 },
-  lightboxImg: { maxWidth: "100%", maxHeight: "82vh", borderRadius: 12, boxShadow: "0 18px 80px rgba(0,0,0,0.7)" },
-  lightboxFooter: { marginTop: 12, width: "100%", display: "flex", justifyContent: "space-between", alignItems: "center", color: "white" },
-  lightboxInfo: { display: "flex", flexDirection: "column", gap: 4 },
-  lightboxActions: { display: "flex", gap: 8 },
-  actionBtn: { background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.08)", color: "#fff", padding: "8px 12px", borderRadius: 8, cursor: "pointer" },
-  closeBtn: { position: "absolute", top: 10, right: 10, background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.08)", color: "#fff", padding: "6px 10px", borderRadius: 8, cursor: "pointer" },
+
+  heroWrap: {
+    width: "100%",
+    maxWidth: 1200,
+    margin: "20px auto",
+    padding: "8px",
+    zIndex: 3,
+  },
+
+  hero: {
+    position: "relative",
+    height: "56vh",
+    borderRadius: 18,
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+
+  heroPolaroidWrap: {
+    display: "flex",
+    justifyContent: "center",
+    width: "100%",
+  },
+
+  polaroid: {
+    width: "100%",
+    maxWidth: 920,
+    background: "linear-gradient(180deg, #fff 0%, #f6f6f6 100%)",
+    borderRadius: 14,
+    boxShadow: "0 18px 48px rgba(0,0,0,0.45)",
+    paddingBottom: 14,
+    overflow: "hidden",
+    cursor: "pointer",
+    transition: "transform 0.2s ease",
+  },
+
+  heroPolaroid: {
+    maxWidth: 920,
+  },
+
+  polaroidImg: {
+    width: "100%",
+    display: "block",
+    borderTopLeftRadius: 10,
+    borderTopRightRadius: 10,
+    objectFit: "cover",
+  },
+
+  heroPolaroidImg: {
+    height: "56vh",
+    objectFit: "cover",
+  },
+
+  polaroidCaption: {
+    textAlign: "center",
+    padding: "10px",
+    color: "rgba(0,0,0,0.8)",
+  },
+
+  captionTitle: {
+    fontSize: 14,
+    marginBottom: 4,
+  },
+
+  captionSub: {
+    fontSize: 12,
+    opacity: 0.6,
+  },
+
+  heroCaptionOverride: {},
+
+  gridWrap: {
+    width: "100%",
+    maxWidth: 1200,
+    padding: "20px",
+    zIndex: 3,
+  },
+
+  grid: {
+    display: "grid",
+    gap: 20,
+  },
+
+  polaroidWrapper: {
+    width: "100%",
+    cursor: "pointer",
+  },
+
+  dots: {
+    display: "flex",
+    justifyContent: "center",
+    gap: 10,
+    marginTop: 12,
+  },
+
+  dot: {
+    width: 8,
+    height: 8,
+    borderRadius: "50%",
+    background: "rgba(255,255,255,0.4)",
+    border: "none",
+  },
+
+  dotActive: {
+    width: 12,
+    height: 12,
+    borderRadius: "50%",
+    background: "#FFD700",
+    border: "none",
+  },
+
+  lightboxOverlay: {
+    position: "fixed",
+    inset: 0,
+    background: "rgba(0,0,0,0.9)",
+    zIndex: 9999,
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+
+  lightboxInner: {
+    position: "relative",
+    maxWidth: "90%",
+    maxHeight: "90%",
+  },
+
+  lightboxImg: {
+    width: "100%",
+    maxHeight: "80vh",
+    borderRadius: 10,
+  },
+
+  closeBtn: {
+    position: "absolute",
+    top: 10,
+    right: 10,
+    background: "rgba(255,255,255,0.1)",
+    border: "none",
+    borderRadius: 6,
+    color: "#fff",
+    fontSize: 20,
+    padding: "4px 10px",
+    cursor: "pointer",
+  },
 };

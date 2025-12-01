@@ -4,7 +4,7 @@ const CollaborationSection = () => {
   const styles = {
     collabSection: {
       backgroundColor: "#c00a0aff",
-      color: "#ffffffc4",
+      color: "#ffffffd7",
       textAlign: "center",
       padding: "35px 15px",
       width: "100%",
@@ -13,7 +13,7 @@ const CollaborationSection = () => {
       fontFamily: "SFHandBold",
     },
     collabText: {
-      fontSize: "1.3rem",
+      fontSize: "1.1rem",
       margin: 0,
       lineHeight: "1.8",
       fontWeight: 700,
